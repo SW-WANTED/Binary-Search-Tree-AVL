@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+#include <string.h>
 #include "avl.h"
+
+#define ESPACO 4 // Define o espaçamento entre os nós
 
 // Definição da estrutura AVL
 struct avl
@@ -93,7 +97,12 @@ AVL *balancearNo(AVL *node)
 // Função para criar um novo nó
 AVL *criarNo(int chave)
 {
-    AVL *no = (AVL *)malloc(sizeof(AVL));
+    AVL *no = malloc(sizeof(AVL));
+    if (!no)
+    {
+        fprintf(stderr, "Erro ao alocar memória para novo nó.\n");
+        exit(1);
+    }
     no->chave = chave;
     no->esquerda = no->direita = NULL;
     no->altura = 1;
@@ -135,7 +144,6 @@ AVL *encontrarMenorNo(AVL *no)
     return no;
 }
 
-
 // Função para remover um nó da AVL
 void removerNo(AVL **raiz, int chave)
 {
@@ -171,36 +179,6 @@ void removerNo(AVL **raiz, int chave)
     if (*raiz)
     {
         *raiz = balancearNo(*raiz);
-    }
-}
-
-void imprimirNivel(AVL *raiz, int nivel)
-{
-    if (!raiz)
-        return;
-
-    if (nivel == 1)
-    {
-        printf("%d ", raiz->chave);
-    }
-    else if (nivel > 1)
-    {
-        imprimirNivel(raiz->esquerda, nivel - 1);
-        imprimirNivel(raiz->direita, nivel - 1);
-    }
-}
-
-// Função para imprimir a árvore em nível
-void imprimirPorNivel(AVL *root)
-{
-    if (!root)
-        return;
-
-    int height = obterAltura(root);
-    for (int i = 1; i <= height; i++)
-    {
-        imprimirNivel(root, i);
-        printf("\n");
     }
 }
 
@@ -242,14 +220,18 @@ int somarSubarvoreEsquerda(AVL *raiz)
 }
 
 // Função para encontrar o N-ésimo maior elemento
-int encontrarMaiorHelper(AVL *raiz, int *n, int *resultado) {
-    if (!raiz) return 0;
+int encontrarMaiorHelper(AVL *raiz, int *n, int *resultado)
+{
+    if (!raiz)
+        return 0;
 
     // Busca primeiro na direita (elementos maiores)
-    if (encontrarMaiorHelper(raiz->direita, n, resultado)) return 1;
+    if (encontrarMaiorHelper(raiz->direita, n, resultado))
+        return 1;
 
     (*n)--; // Decrementa a posição
-    if (*n == 0) {
+    if (*n == 0)
+    {
         *resultado = raiz->chave;
         return 1; // Encontrado
     }
@@ -257,8 +239,82 @@ int encontrarMaiorHelper(AVL *raiz, int *n, int *resultado) {
     return encontrarMaiorHelper(raiz->esquerda, n, resultado);
 }
 
-int encontrarMaior(AVL *raiz, int n, int *encontrado) {
+int encontrarMaior(AVL *raiz, int n, int *encontrado)
+{
     int resultado = -1;
     *encontrado = encontrarMaiorHelper(raiz, &n, &resultado);
     return resultado;
+}
+
+// Função auxiliar para desenhar a árvore horizontalmente
+void desenhaArvoreHoriz(AVL *arvore, int profundidade, char *caminho, int direita) {
+    if (arvore == NULL) {
+        return;
+    }
+
+    // Incrementa a profundidade
+    profundidade++;
+
+    // Desenha a subárvore direita primeiro
+    desenhaArvoreHoriz(arvore->direita, profundidade, caminho, 1);
+
+    // Configura o mapa de ramificações
+    caminho[profundidade - 2] = 0;
+    if (direita) {
+        caminho[profundidade - 2] = 1;
+    }
+    if (arvore->esquerda) {
+        caminho[profundidade - 1] = 1;
+    }
+
+    // Imprime o nó atual com os traços e ramificações
+    printf("\n");
+    for (int i = 0; i < profundidade - 1; i++) {
+        if (i == profundidade - 2) {
+            printf("+");
+        } else if (caminho[i]) {
+            printf("|");
+        } else {
+            printf(" ");
+        }
+
+        for (int j = 1; j < ESPACO; j++) {
+            if (i < profundidade - 2) {
+                printf(" ");
+            } else {
+                printf("-");
+            }
+        }
+    }
+    printf("%d\n", arvore->chave);
+
+    // Imprime os espaços verticais abaixo
+    for (int i = 0; i < profundidade; i++) {
+        if (caminho[i]) {
+            printf("|");
+        } else {
+            printf(" ");
+        }
+
+        for (int j = 1; j < ESPACO; j++) {
+            printf(" ");
+        }
+    }
+
+    // Desenha a subárvore esquerda
+    desenhaArvoreHoriz(arvore->esquerda, profundidade, caminho, 0);
+}
+
+// Função principal para desenhar a árvore horizontalmente
+void imprimirArvore(AVL *arvore) {
+    char caminho[255] = {}; // Caminho para rastrear as ramificações
+    desenhaArvoreHoriz(arvore, 0, caminho, 0);
+}
+
+void liberarArvore(AVL *raiz) {
+    if (!raiz) return;
+    liberarArvore(raiz->esquerda);
+    liberarArvore(raiz->direita);
+    free(raiz);
+    raiz = NULL;
 }

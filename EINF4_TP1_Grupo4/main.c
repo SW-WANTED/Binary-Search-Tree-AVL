@@ -1,7 +1,37 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "avl.h"
 
-// Função principal para teste
+// Definições de cores ANSI
+#define RESET "\033[0m"
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define YELLOW "\033[33m"
+#define CYAN "\033[36m"
+#define BOLD "\033[1m"
+
+// Função para pausar e limpar a tela
+void pausarEContinuar()
+{
+    printf("\n%sPressione Enter para continuar...%s", CYAN, RESET);
+    getchar();
+    getchar();
+    system("cls");
+}
+
+void exibirMenu(int opcaoSelecionada)
+{
+    printf("\n%s--- Menu AVL Tree ---\n%s", BOLD, RESET);
+    printf("%s%s1. Inserir elemento%s\n", opcaoSelecionada == 1 ? GREEN : RESET, BOLD, RESET);
+    printf("%s%s2. Remover elemento%s\n", opcaoSelecionada == 2 ? GREEN : RESET, BOLD, RESET);
+    printf("%s%s3. Imprimir Arvore%s\n", opcaoSelecionada == 3 ? GREEN : RESET, BOLD, RESET);
+    printf("%s%s4. Pesquisar No%s\n", opcaoSelecionada == 4 ? GREEN : RESET, BOLD, RESET);
+    printf("%s%s5. Soma da Subarvore Esquerda%s\n", opcaoSelecionada == 5 ? GREEN : RESET, BOLD, RESET);
+    printf("%s%s6. Encontrar N-esimo Maior%s\n", opcaoSelecionada == 6 ? GREEN : RESET, BOLD, RESET);
+    printf("%s%s0. Sair%s\n", opcaoSelecionada == 0 ? GREEN : RESET, BOLD, RESET);
+    printf("%sEscolha uma opcao: %s", CYAN, RESET);
+}
+
 int main()
 {
     AVL *raiz = NULL;
@@ -9,16 +39,10 @@ int main()
 
     do
     {
-        printf("\n--- Menu AVL Tree ---\n");
-        printf("1. Inserir elemento\n");
-        printf("2. Remover elemento\n");
-        printf("3. Imprimir Nivel\n");
-        printf("4. Pesquisar No\n");
-        printf("5. Soma da Subarvore Esquerda\n");
-        printf("6. Encontrar N-esimo Maior\n");
-        printf("0. Sair\n");
-        printf("Escolha uma opcao: ");
+        exibirMenu(-1);
         scanf("%d", &escolha);
+
+        exibirMenu(escolha);
 
         switch (escolha)
         {
@@ -26,21 +50,22 @@ int main()
             printf("Digite a chave para inserir: ");
             scanf("%d", &chave);
             inserirNo(&raiz, chave);
-            printf("Elemento inserido com sucesso.\n");
+            printf("%sElemento inserido com sucesso.%s\n", GREEN, RESET);
+            pausarEContinuar();
             break;
 
         case 2:
             printf("Digite a chave para remover: ");
             scanf("%d", &chave);
             removerNo(&raiz, chave);
-            printf("Elemento removido com sucesso.\n");
+            printf("%sElemento removido com sucesso.%s\n", GREEN, RESET);
+            pausarEContinuar();
             break;
 
-        case 3:
-            printf("Digite o nivel para imprimir: ");
-            scanf("%d", &nivel);
-            printf("Nos no nivel %d:\n", nivel);
-            imprimirNivel(raiz, nivel);
+        case 3: // Opção para imprimir a árvore AVL completa
+            printf("Estrutura da árvore AVL:\n");
+            imprimirArvore(raiz);
+            pausarEContinuar();
             break;
 
         case 4:
@@ -48,17 +73,19 @@ int main()
             scanf("%d", &chave);
             if (pesquisarNo(raiz, chave))
             {
-                printf("Elemento com chave %d encontrado.\n", chave);
+                printf("%sElemento com chave %d encontrado.%s\n", GREEN, chave, RESET);
             }
             else
             {
-                printf("Elemento com chave %d nao encontrado.\n", chave);
+                printf("%sElemento com chave %d nao encontrado.%s\n", RED, chave, RESET);
             }
+            pausarEContinuar();
             break;
 
         case 5:
             resultado = somarSubarvoreEsquerda(raiz);
             printf("Soma da subarvore esquerda: %d\n", resultado);
+            pausarEContinuar();
             break;
 
         case 6:
@@ -68,21 +95,23 @@ int main()
             resultado = encontrarMaior(raiz, n, &encontrado);
             if (encontrado)
             {
-                printf("O %d-esimo maior elemento e: %d\n", n, resultado);
+                printf("%sO %d-esimo maior elemento e: %d%s\n", GREEN, n, resultado, RESET);
             }
             else
             {
-                printf("Nao ha elementos suficientes na arvore.\n");
+                printf("%sNao ha elementos suficientes na arvore.%s\n", RED, RESET);
             }
-
+            pausarEContinuar();
             break;
 
         case 0:
-            printf("Saindo...\n");
+            printf("%sSaindo...%s\n", YELLOW, RESET);
+            liberarArvore(raiz);
             break;
 
         default:
-            printf("Opcao invalida! Tente novamente.\n");
+            printf("%sOpcao invalida! Tente novamente.%s\n", RED, RESET);
+            pausarEContinuar();
         }
     } while (escolha != 0);
 
