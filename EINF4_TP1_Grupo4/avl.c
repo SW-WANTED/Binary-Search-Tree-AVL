@@ -248,6 +248,7 @@ int encontrarMaior(AVL *raiz, int n, int *encontrado)
 
 // Função auxiliar para desenhar a árvore horizontalmente
 void desenhaArvoreHoriz(AVL *arvore, int profundidade, char *caminho, int direita) {
+    int i, j;
     if (arvore == NULL) {
         return;
     }
@@ -269,7 +270,7 @@ void desenhaArvoreHoriz(AVL *arvore, int profundidade, char *caminho, int direit
 
     // Imprime o nó atual com os traços e ramificações
     printf("\n");
-    for (int i = 0; i < profundidade - 1; i++) {
+    for (i = 0; i < profundidade - 1; i++) {
         if (i == profundidade - 2) {
             printf("+");
         } else if (caminho[i]) {
@@ -278,7 +279,7 @@ void desenhaArvoreHoriz(AVL *arvore, int profundidade, char *caminho, int direit
             printf(" ");
         }
 
-        for (int j = 1; j < ESPACO; j++) {
+        for (j = 1; j < ESPACO; j++) {
             if (i < profundidade - 2) {
                 printf(" ");
             } else {
@@ -289,14 +290,14 @@ void desenhaArvoreHoriz(AVL *arvore, int profundidade, char *caminho, int direit
     printf("%d\n", arvore->chave);
 
     // Imprime os espaços verticais abaixo
-    for (int i = 0; i < profundidade; i++) {
+    for (i = 0; i < profundidade; i++) {
         if (caminho[i]) {
             printf("|");
         } else {
             printf(" ");
         }
 
-        for (int j = 1; j < ESPACO; j++) {
+        for (j = 1; j < ESPACO; j++) {
             printf(" ");
         }
     }

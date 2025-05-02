@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "avl.h"
 
-// Definições de cores ANSI
+// Defini��es de cores ANSI
 #define RESET "\033[0m"
 #define RED "\033[31m"
 #define GREEN "\033[32m"
@@ -10,7 +10,7 @@
 #define CYAN "\033[36m"
 #define BOLD "\033[1m"
 
-// Função para pausar e limpar a tela
+// Fun��o para pausar e limpar a tela
 void pausarEContinuar()
 {
     printf("\n%sPressione Enter para continuar...%s", CYAN, RESET);
@@ -63,7 +63,7 @@ int main()
             break;
 
         case 3: // Opção para imprimir a árvore AVL completa
-            printf("Estrutura da árvore AVL:\n");
+            printf("Estrutura da Arvore AVL (Horizontalmente):\n");
             imprimirArvore(raiz);
             pausarEContinuar();
             break;
